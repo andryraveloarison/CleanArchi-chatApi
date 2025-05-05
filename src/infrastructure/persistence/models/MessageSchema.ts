@@ -1,8 +1,12 @@
 import mongoose from "mongoose";
 
 const MessageSchema = new mongoose.Schema({
-  senderId: String,
-  content: String,
+  senderId: { type: String, required: true },
+  receiverId: { type: String, required: true },
+  content: {
+    forReceiver: { type: String, required: true },
+    forSender: { type: String, required: true },
+  },
   timestamp: { type: Date, default: Date.now },
 });
 
