@@ -18,7 +18,6 @@ export class UserRepositoryImpl implements IUserRepository {
     return await UserModel.findOne({ email }).lean();
   }
 
-
   async findById(id: string): Promise<User | null> {
     return await UserModel.findOne({ _id: id }).lean();
   }

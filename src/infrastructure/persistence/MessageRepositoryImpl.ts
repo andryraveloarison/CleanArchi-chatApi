@@ -1,7 +1,7 @@
 import MessageModel from "./models/MessageSchema";
 import { IMessageRepository } from "../../domain/repositories/IMessageRepository";
 import { Message } from "../../domain/entities/Message";
-import CryptoJS from "crypto-js"; // ou crypto si tu veux utiliser une autre lib
+import CryptoJS from "crypto-js"; 
 import crypto from "crypto";
 
 
@@ -36,8 +36,6 @@ export class MessageRepositoryImpl implements IMessageRepository {
   );
 
   console.log("Texte déchiffré:", decrypted.toString());
-
-
   
     const messages = await MessageModel.find({
       $or: [
@@ -63,7 +61,7 @@ export class MessageRepositoryImpl implements IMessageRepository {
           }
         }
       } catch (e) {
-        // tu peux log l'erreur ici si besoin
+        console.error(e)
       }
   
       return {
