@@ -2,7 +2,9 @@ import { Server, Socket } from "socket.io";
 
 let io: Server;
 
-export const initSocket = (io: Server) => {
+export const initSocket = (server: Server) => {
+  io = server; // ✅ ici tu assignes à la variable globale
+
   io.on("connection", (socket: Socket) => {
     console.log("🟢 New client connected:", socket.id);
 

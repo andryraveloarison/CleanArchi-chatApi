@@ -9,8 +9,6 @@ export class CreateMessage {
     private userRepository: IUserRepository
   ) {}
 
-  
-
   async execute(senderId: string, receiverId: string, plainText: string): Promise<Message> {
     // Récupérer la clé publique du receiver
     const receiver = await this.userRepository.findById(receiverId);
