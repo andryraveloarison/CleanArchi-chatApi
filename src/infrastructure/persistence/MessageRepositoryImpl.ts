@@ -2,10 +2,22 @@ import MessageModel from "./models/MessageSchema";
 import { IMessageRepository } from "../../domain/repositories/IMessageRepository";
 import { Message } from "../../domain/entities/Message";
 import CryptoJS from "crypto-js"; 
-import crypto from "crypto";
 
 
 export class MessageRepositoryImpl implements IMessageRepository {
+
+  async findMessagesInvolvingUser(userId: string): Promise<Message[]> {
+    const messages = await MessageModel.find({
+      $or: [
+        { senderId: userId },
+        { receiverId: userId }
+      ]
+    }).sort({ timestamp: -1 }).lean();
+  
+    return messages;
+  }
+
+  
   async save(message: Message): Promise<Message> {
     const created = await MessageModel.create(message);
     return created.toObject();
@@ -56,4 +68,6 @@ export class MessageRepositoryImpl implements IMessageRepository {
       };
     });
   }
+
+  
 }
