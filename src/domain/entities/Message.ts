@@ -1,10 +1,14 @@
 export interface Message {
-  id?: string;
+  _id?: string;
   senderId: string;
-  receiverId: string;
+  receiverId?: string;
+  groupId?: string;
+  isGroup?: boolean;
   content?: {
     forReceiver: string;
     forSender: string;
   };
   timestamp: Date;
+  read?: boolean;
+  readBy?: string[];
 }

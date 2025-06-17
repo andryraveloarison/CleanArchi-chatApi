@@ -4,19 +4,21 @@ import { CreateUser } from "../../application/usecases/User/CreateUser";
 import { GetAllUsers } from "../../application/usecases/User/GetAllUser";
 import { GetOneUser } from "../../application/usecases/User/GetOneUser";
 import { LoginUser } from "../../application/usecases/User/LoginUser";
-import { GetUsersWithLastMessage } from "../../application/usecases/User/GetUsersWithLastMessage";
+import { GetConversations } from "../../application/usecases/User/GetConversations";
 import { MessageRepositoryImpl } from "../../infrastructure/persistence/MessageRepositoryImpl";
 import { LogoutUser } from "../../application/usecases/User/LogoutUser";
+import { GroupRepositoryImpl } from "../../infrastructure/persistence/GroupRepositoryImpl";
 
 const router = express.Router();
 const repo = new UserRepositoryImpl();
 const messageRepository = new MessageRepositoryImpl();
+const groupRepository = new GroupRepositoryImpl()
 const createUser = new CreateUser(repo);
 const getAllUsers = new GetAllUsers(repo);
 const getOneUser = new GetOneUser(repo);
 const loginUser = new LoginUser(repo)
 const logoutUser = new LogoutUser(repo)
-const getMessagesBetweenUsers = new GetUsersWithLastMessage(messageRepository,repo)
+const getMessagesBetweenUsers = new GetConversations(messageRepository,repo, groupRepository)
 
 router.post("/register", async (req, res) => {
   const user = await createUser.execute(req.body);

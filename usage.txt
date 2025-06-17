@@ -1,0 +1,76 @@
+API CLEAN CHAT
+
+
+
+1 - GET ALL USERS
+
+GET http://localhost:3000/api/users/getAll
+
+2 - LOGOUT 
+
+PATCH http://localhost:3000/api/users/logout
+
+{
+	"userId": "683aa858e8d544cbdcb3886c"
+} 
+
+3 - GET CONVERSATION
+
+GET http://localhost:3000/api/users/getUserMessage/683ab4d251ff282910f48da9
+
+NB: id de l'utilisateur
+
+4 - CREATE GROUPE
+
+POST http://localhost:3000/api/group/create
+
+
+{
+  "name": "Équipe Dev",
+  "members": ["683aa858e8d544cbdcb3886c", "683ab4d251ff282910f48da9", "683ab9208d0b70ddcbdf11a3"]
+}
+
+NB: id des membres
+
+
+5 - ADD MESSAGE PRIVE
+
+POST http://localhost:3000/api/message/send
+
+{
+	"senderId":"683aa858e8d544cbdcb3886c",
+	"receiverId":"683ab4d251ff282910f48da9",
+	"content":"Mickael makany amin'i Nananjy 3"
+}
+
+6 - ADD MESSAGE GROUPE
+
+POST http://localhost:3000/api/message/send
+
+{
+  "senderId": "683ab4d251ff282910f48da9",
+  "groupId": "68512018ebeb034645fd32ec",
+  "content": "Manahoana daholo Andry ihany ity "
+}
+
+
+7 - GET MESSAGE PRIVE
+
+GET http://localhost:3000/api/message/683aa858e8d544cbdcb3886c/683ab4d251ff282910f48da9
+
+NB : id du sender , id du receiver
+
+
+8 - GET MESSAGE GROUPE
+
+GET http://localhost:3000/api/message/group/683ab4d251ff282910f48da9/68512018ebeb034645fd32ec
+
+NB: id du sender, id du groupe
+
+
+9 - MARK AS READ
+
+PUT http://localhost:3000/api/message/read/683aa858e8d544cbdcb3886c/683ab4d251ff282910f48da9?isGroup=false
+
+NB: id de l'user connecte, id de l'user ou groupe a discuter 
+
