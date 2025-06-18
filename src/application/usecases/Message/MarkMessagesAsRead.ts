@@ -1,4 +1,4 @@
-import { IMessageRepository } from "../../../domain/repositories/IMessageRepository";
+import { IMessageRepository, toDomainMessage } from "../../../domain/repositories/IMessageRepository";
 
 export class MarkMessagesAsRead {
   constructor(private messageRepository: IMessageRepository) {}
@@ -15,22 +15,22 @@ export class MarkMessagesAsRead {
       messages = await this.messageRepository.findMessagesBetweenUsers(userId, targetId);
     }
 
-
+    messages = messages.map(toDomainMessage)
 
 
     for (const message of messages) {
       if (isGroup) {
         if (!message.readBy) message.readBy = [];
-        if (!message.readBy.includes(userId) && message._id) {
+        if (!message.readBy.includes(userId) && message.id) {
           message.readBy.push(userId);
-            await this.messageRepository.update(message._id, { readBy: message.readBy });
+            await this.messageRepository.update(message.id, { readBy: message.readBy });
           
         }
       } else {
         // message privé → userId doit être le destinataire
 
-        if (message.receiverId === targetId && !message.read && message._id) {
-            await this.messageRepository.update(message._id, { read: true });
+        if (message.receiverId === targetId && !message.read && message.id) {
+            await this.messageRepository.update(message.id, { read: true });
         }
       }
     }

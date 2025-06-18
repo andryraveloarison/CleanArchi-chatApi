@@ -8,6 +8,7 @@ import { GetConversations } from "../../application/usecases/User/GetConversatio
 import { MessageRepositoryImpl } from "../../infrastructure/persistence/MessageRepositoryImpl";
 import { LogoutUser } from "../../application/usecases/User/LogoutUser";
 import { GroupRepositoryImpl } from "../../infrastructure/persistence/GroupRepositoryImpl";
+import { getIO } from "../../infrastructure/socket/ChatGateway";
 
 const router = express.Router();
 const repo = new UserRepositoryImpl();
@@ -19,16 +20,19 @@ const getOneUser = new GetOneUser(repo);
 const loginUser = new LoginUser(repo)
 const logoutUser = new LogoutUser(repo)
 const getMessagesBetweenUsers = new GetConversations(messageRepository,repo, groupRepository)
+const io = getIO();
 
 router.post("/register", async (req, res) => {
   const user = await createUser.execute(req.body);
+  io.emit("new_user", {user});
   res.json(user);
 });
 
 router.post("/login", async (req, res) => {
   try {
     const user = await loginUser.execute(req.body.email, req.body.password);
-    
+    io.emit("new_user_connected", {user}); // ou socket.to(receiverId).emit(...) si tu veux envoyer à un seul utilisateur
+
     // Si l'utilisateur est trouvé et connecté, envoyer l'utilisateur (sans mot de passe et clé)
     res.json(user);
   } catch (error) {
@@ -65,6 +69,8 @@ router.patch("/logout", async (req, res) => {
     if (!userId) {
       return res.status(400).json({ success: false, message: "User ID requis" });
     }
+
+    io.emit("user_disconnect", {userId}); // ou socket.to(receiverId).emit(...) si tu veux envoyer à un seul utilisateur
 
     const result = await logoutUser.execute(userId);
     res.json(result);

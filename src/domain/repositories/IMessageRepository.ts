@@ -1,5 +1,23 @@
 import { Message } from "../entities/Message";
 
+
+export function toDomainMessage(doc: any): Message {
+  console.log("********************")
+  console.log(doc._id.toString())
+  console.log("********************")
+  return {
+    id: doc._id.toString(),
+    senderId: doc.senderId,
+    receiverId: doc.receiverId,
+    groupId: doc.groupId,
+    isGroup: doc.isGroup,
+    content: doc.content,
+    timestamp: doc.timestamp,
+    read: doc.read,
+    readBy: doc.readBy,
+  };
+}
+
 export interface IMessageRepository {
   save(message: Message): Promise<Message>;
   getAll(): Promise<Message[]>;

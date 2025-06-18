@@ -1,5 +1,5 @@
 import MessageModel from "./models/MessageSchema";
-import { IMessageRepository } from "../../domain/repositories/IMessageRepository";
+import { IMessageRepository, toDomainMessage } from "../../domain/repositories/IMessageRepository";
 import { Message } from "../../domain/entities/Message";
 import CryptoJS from "crypto-js"; 
 
@@ -7,7 +7,7 @@ import CryptoJS from "crypto-js";
 export class MessageRepositoryImpl implements IMessageRepository {
 
   async findMessagesInvolvingUser(userId: string): Promise<Message[]> {
-    const messages = await MessageModel.find({
+    const docs = await MessageModel.find({
   
       $or: [
         { receiverId: userId }
@@ -15,8 +15,8 @@ export class MessageRepositoryImpl implements IMessageRepository {
     }).sort({ timestamp: -1 }).lean();
 
 
+    return docs;
 
-    return messages;
   }
 
   
@@ -77,16 +77,16 @@ export class MessageRepositoryImpl implements IMessageRepository {
 
 
   async getMessageUserGroup(userId: string, groupId: string): Promise<Message[]> {
-    const messages = await MessageModel.find({
+    const docs = await MessageModel.find({
       isGroup: true,
-      $or: [
-        { receiverId: userId }
-      ],
-      groupId: groupId
-    }).sort({ timestamp: -1 }).lean();
+      groupId,
+      $or: [{ receiverId: userId }],
+    }).sort({ timestamp: -1 });
 
-    return messages;
+    return docs;
   }
+  
+  
 
     // ✅ findById
     async findById(id: string): Promise<Message | null> {

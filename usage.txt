@@ -74,3 +74,12 @@ PUT http://localhost:3000/api/message/read/683aa858e8d544cbdcb3886c/683ab4d251ff
 
 NB: id de l'user connecte, id de l'user ou groupe a discuter 
 
+
+
+
+
+SOCKET
+
+1 - USER CONNECTED : io.emit("new_user_connected", {user});
+2 - USER DISCONNECT : io.emit("user_disconnect", {userId});
+3 - NEW USER :   io.emit("new_user", {user});
