@@ -20,9 +20,9 @@ const getOneUser = new GetOneUser(repo);
 const loginUser = new LoginUser(repo)
 const logoutUser = new LogoutUser(repo)
 const getMessagesBetweenUsers = new GetConversations(messageRepository,repo, groupRepository)
-const io = getIO();
 
 router.post("/register", async (req, res) => {
+  const io = getIO();
   const user = await createUser.execute(req.body);
   io.emit("new_user", {user});
   res.json(user);
@@ -30,6 +30,7 @@ router.post("/register", async (req, res) => {
 
 router.post("/login", async (req, res) => {
   try {
+    const io = getIO();
     const user = await loginUser.execute(req.body.email, req.body.password);
     io.emit("new_user_connected", {user}); // ou socket.to(receiverId).emit(...) si tu veux envoyer à un seul utilisateur
 
@@ -69,6 +70,7 @@ router.patch("/logout", async (req, res) => {
     if (!userId) {
       return res.status(400).json({ success: false, message: "User ID requis" });
     }
+    const io = getIO();
 
     io.emit("user_disconnect", {userId}); // ou socket.to(receiverId).emit(...) si tu veux envoyer à un seul utilisateur
 

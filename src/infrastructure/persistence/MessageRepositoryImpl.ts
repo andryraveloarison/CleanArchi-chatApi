@@ -14,7 +14,6 @@ export class MessageRepositoryImpl implements IMessageRepository {
       ]
     }).sort({ timestamp: -1 }).lean();
 
-
     return docs;
 
   }

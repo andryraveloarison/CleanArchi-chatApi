@@ -21,8 +21,8 @@ const markMessagesAsRead = new MarkMessagesAsRead(messageRepo)
 router.post("/send", async (req, res) => {
   try {
     const { senderId, receiverId, content, groupId, } = req.body;
-    const message = await createMessage.execute(senderId, receiverId, content, groupId);
     const io = getIO();
+    const message = await createMessage.execute(senderId, receiverId, content, groupId);
     io.emit("new_message", {receiverId,message}); // ou socket.to(receiverId).emit(...) si tu veux envoyer à un seul utilisateur
 
     res.status(201).json(message);
