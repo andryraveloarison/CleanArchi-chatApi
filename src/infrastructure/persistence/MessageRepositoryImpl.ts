@@ -80,7 +80,7 @@ export class MessageRepositoryImpl implements IMessageRepository {
       isGroup: true,
       groupId,
       $or: [{ receiverId: userId }],
-    }).sort({ timestamp: -1 });
+    }).sort({ timestamp: 1 });
 
     return docs;
   }

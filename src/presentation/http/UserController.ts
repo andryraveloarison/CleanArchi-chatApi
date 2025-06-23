@@ -9,6 +9,7 @@ import { MessageRepositoryImpl } from "../../infrastructure/persistence/MessageR
 import { LogoutUser } from "../../application/usecases/User/LogoutUser";
 import { GroupRepositoryImpl } from "../../infrastructure/persistence/GroupRepositoryImpl";
 import { getIO } from "../../infrastructure/socket/ChatGateway";
+import { User } from "../../domain/entities/User";
 
 const router = express.Router();
 const repo = new UserRepositoryImpl();
@@ -32,7 +33,9 @@ router.post("/login", async (req, res) => {
   try {
     const io = getIO();
     const user = await loginUser.execute(req.body.email, req.body.password);
-    io.emit("new_user_connected", {user}); // ou socket.to(receiverId).emit(...) si tu veux envoyer à un seul utilisateur
+    const newUser = user.user as User
+    const rep= newUser._id
+    io.emit("new_user_connected", {rep}); // ou socket.to(receiverId).emit(...) si tu veux envoyer à un seul utilisateur
 
     // Si l'utilisateur est trouvé et connecté, envoyer l'utilisateur (sans mot de passe et clé)
     res.json(user);
