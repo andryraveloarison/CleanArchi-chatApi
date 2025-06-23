@@ -66,7 +66,7 @@ export class CreateMessage {
       const messages: Message[] = [];
   
       for (const memberId of group.members) {
-        const user = await this.userRepository.findById(memberId);
+        const user = await this.userRepository.findById(memberId.id);
         if (!user?.key) continue;
   
         const encryptedForReceiver = publicEncrypt(user.key, Buffer.from(plainText));
@@ -76,7 +76,7 @@ export class CreateMessage {
           senderId,
           groupId,
           isGroup: true,
-          receiverId: memberId,
+          receiverId: memberId.id,
           content: {
             forReceiver: encryptedForReceiver.toString("base64"),
             forSender: encryptedForSender.toString("base64"),

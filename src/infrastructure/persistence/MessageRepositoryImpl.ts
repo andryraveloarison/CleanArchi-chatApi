@@ -10,7 +10,8 @@ export class MessageRepositoryImpl implements IMessageRepository {
     const docs = await MessageModel.find({
   
       $or: [
-        { receiverId: userId }
+        { receiverId: userId },
+        { senderId: userId}
       ]
     }).sort({ timestamp: -1 }).lean();
 
