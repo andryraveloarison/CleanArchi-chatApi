@@ -15,6 +15,7 @@ export class MessageRepositoryImpl implements IMessageRepository {
     })
       .sort({ timestamp: -1 })
       .populate("senderId", "username") // ⬅️ récupérer le nom de l'expéditeur
+      .lean();
   
     return docs.map(toDomainMessage);
   }
