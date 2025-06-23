@@ -9,8 +9,7 @@ export class MessageRepositoryImpl implements IMessageRepository {
   async findMessagesInvolvingUser(userId: string): Promise<Message[]> {
     const docs = await MessageModel.find({
       $or: [
-        { receiverId: userId },
-        { senderId: userId }
+        { receiverId: userId }
       ]
     })
       .sort({ timestamp: -1 })
