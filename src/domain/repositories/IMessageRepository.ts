@@ -7,7 +7,8 @@ export function toDomainMessage(doc: any): Message {
   console.log("********************")
   return {
     id: doc._id.toString(),
-    senderId: doc.senderId,
+    senderId: doc.senderId._id?.toString?.() ?? doc.senderId.toString(),
+    senderName: doc.senderId.username ?? null, // ← inclus ici
     receiverId: doc.receiverId,
     groupId: doc.groupId,
     isGroup: doc.isGroup,

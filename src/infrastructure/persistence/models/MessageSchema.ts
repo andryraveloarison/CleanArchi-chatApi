@@ -1,7 +1,7 @@
 import mongoose from "mongoose";
 
 const MessageSchema = new mongoose.Schema({
-  senderId: { type: String, required: true },
+  senderId: { type: mongoose.Schema.Types.ObjectId, ref: "User", required: true },
   receiverId: { type: String, default: null },
   groupId: { type: String, default: null },
   isGroup: { type: Boolean, default: false },

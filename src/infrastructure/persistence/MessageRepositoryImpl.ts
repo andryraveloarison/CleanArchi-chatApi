@@ -8,16 +8,18 @@ export class MessageRepositoryImpl implements IMessageRepository {
 
   async findMessagesInvolvingUser(userId: string): Promise<Message[]> {
     const docs = await MessageModel.find({
-  
       $or: [
         { receiverId: userId },
-        { senderId: userId}
+        { senderId: userId }
       ]
-    }).sort({ timestamp: -1 }).lean();
-
-    return docs;
-
+    })
+      .sort({ timestamp: -1 })
+      .populate("senderId", "username") // ⬅️ récupérer le nom de l'expéditeur
+      .lean();
+  
+    return docs.map(toDomainMessage);
   }
+  
 
   
   async save(message: Message): Promise<Message> {
@@ -81,9 +83,13 @@ export class MessageRepositoryImpl implements IMessageRepository {
       isGroup: true,
       groupId,
       $or: [{ receiverId: userId }],
-    }).sort({ timestamp: 1 });
+    })
+    .populate("senderId", "username") // ⬅️ récupérer le nom de l'expéditeur
+    .sort({ timestamp: 1 })
+    .lean();
+  
+    return docs.map(toDomainMessage);
 
-    return docs;
   }
   
   
