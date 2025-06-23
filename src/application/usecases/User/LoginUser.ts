@@ -26,7 +26,7 @@ export class LoginUser {
     delete safeUser.key;
     
 
-    const id = (user.id || (user as any)._id) as string;
+    const id = (user._id || (user as any)._id) as string;
 
 
     // ✅ Mettre à jour le champ `online` à true
@@ -36,7 +36,7 @@ export class LoginUser {
     }
 
     const token = jwt.sign(
-      { id: updatedUser.id, email: updatedUser.email },
+      { id: updatedUser._id, email: updatedUser.email },
       this.jwtSecret,
       { expiresIn: '1h' }
     );

@@ -59,7 +59,7 @@ export class GetConversations {
           results.push({
             type: "user",
             target: {
-              id: user.id,
+              _id: user._id,
               email: user.email,
               username: user.username,
               online: user.online,

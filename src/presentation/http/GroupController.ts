@@ -39,7 +39,7 @@ router.post("/:groupId/remove-member", async (req, res) => {
   }
 });
 
-// Obtenir un groupe
+// Obtenir un groupe + RENVOYER NOM MEMBRE
 router.get("/:groupId", async (req, res) => {
   try {
     const { groupId } = req.params;

@@ -15,8 +15,8 @@ const app = express();
 
 app.use(morgan("dev"));
 app.use(cors({
-    origin: "*", // Remplacez par l'URL de votre frontend
-    methods: ["GET", "POST", "PUT", "DELETE"], // Méthodes autorisées
+    origin: "http://localhost:5173", // Remplacez par l'URL de votre frontend
+    methods: ["GET", "POST", "PUT", "DELETE", "PATCH"], // Méthodes autorisées
     allowedHeaders: ["Content-Type", "Authorization"] // En-têtes autorisés
 }));
 
