@@ -23,7 +23,11 @@ router.post("/send", async (req, res) => {
     const { senderId, receiverId, content, groupId, } = req.body;
     const io = getIO();
     const message = await createMessage.execute(senderId, receiverId, content, groupId);
-    io.emit("new_message", {receiverId,message}); // ou socket.to(receiverId).emit(...) si tu veux envoyer à un seul utilisateur
+    if(groupId){
+      io.emit("new_message", {senderId,receiverId,message}); // ou socket.to(receiverId).emit(...) si tu veux envoyer à un seul utilisateur
+    }else{
+      io.emit("group_message", {message})
+    }
 
     res.status(201).json(message);
   } catch (err: any) {
