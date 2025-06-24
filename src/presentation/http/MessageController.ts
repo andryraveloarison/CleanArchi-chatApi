@@ -20,10 +20,10 @@ const markMessagesAsRead = new MarkMessagesAsRead(messageRepo)
 // POST /messages
 router.post("/send", async (req, res) => {
   try {
-    const { senderId, receiverId, content, groupId, } = req.body;
+    const { senderId, receiverId, content, groupId} = req.body;
     const io = getIO();
     const message = await createMessage.execute(senderId, receiverId, content, groupId);
-    if(groupId){
+    if(!groupId){
       io.emit("new_message", {senderId,receiverId,message}); // ou socket.to(receiverId).emit(...) si tu veux envoyer à un seul utilisateur
     }else{
       io.emit("group_message", {message})
