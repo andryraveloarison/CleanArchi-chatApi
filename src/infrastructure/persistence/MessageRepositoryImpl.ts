@@ -9,12 +9,15 @@ export class MessageRepositoryImpl implements IMessageRepository {
   async findMessagesInvolvingUser(userId: string): Promise<Message[]> {
     const docs = await MessageModel.find({
       $or: [
-        { receiverId: userId }
+        { receiverId: userId },
+        { senderId : userId}
       ]
     })
       .sort({ timestamp: -1 })
       .populate("senderId", "username") // ⬅️ récupérer le nom de l'expéditeur
       .lean();
+
+    console.log(docs)
   
     return docs.map(toDomainMessage);
   }
