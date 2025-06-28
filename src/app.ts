@@ -9,9 +9,11 @@ import messageRoutes from "./presentation/http/MessageController";
 import groupRoutes from "./presentation/http/GroupController"
 import cors from "cors";
 import morgan from "morgan"; // Import Morgan
+import path from "path";
 
 dotenv.config();
 const app = express();
+app.use("/uploads", express.static(path.join(__dirname, "../uploads")));
 
 app.use(morgan("dev"));
 app.use(cors({

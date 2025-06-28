@@ -5,4 +5,8 @@ export interface User {
   password: string;
   online: Boolean;
   key: string;
+  photo?: string;
+
 }
+
+

@@ -10,6 +10,7 @@ import { LogoutUser } from "../../application/usecases/User/LogoutUser";
 import { GroupRepositoryImpl } from "../../infrastructure/persistence/GroupRepositoryImpl";
 import { getIO } from "../../infrastructure/socket/ChatGateway";
 import { User } from "../../domain/entities/User";
+import { upload } from "../../infrastructure/middleware/upload";
 
 const router = express.Router();
 const repo = new UserRepositoryImpl();
@@ -22,11 +23,24 @@ const loginUser = new LoginUser(repo)
 const logoutUser = new LogoutUser(repo)
 const getMessagesBetweenUsers = new GetConversations(messageRepository,repo, groupRepository)
 
-router.post("/register", async (req, res) => {
-  const io = getIO();
-  const user = await createUser.execute(req.body);
-  io.emit("new_user", {user});
-  res.json(user);
+router.post("/register", upload.single("photo"), async (req, res) => {
+  try {
+    const io = getIO();
+    const file = req.file;
+    const body = req.body;
+
+    const userData = {
+      ...body,
+      photo: file?.filename, // ou path: `uploads/users/${file?.filename}` si tu veux le chemin complet
+    };
+
+    const user = await createUser.execute(userData);
+    io.emit("new_user", { user });
+    res.json(user);
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({ message: "Erreur lors de l'enregistrement" });
+  }
 });
 
 router.post("/login", async (req, res) => {
@@ -84,5 +98,24 @@ router.patch("/logout", async (req, res) => {
   }
 });
 
+import { RegenerateKeyPair } from "../../application/usecases/User/RegenerateKeyPair";
+
+const regenerateKeyPair = new RegenerateKeyPair(repo);
+
+router.post("/regenerate-key", async (req, res) => {
+  try {
+    const { userId, password } = req.body;
+
+    if (!userId || !password) {
+      return res.status(400).json({ message: "userId et password requis" });
+    }
+
+    const { privateKey } = await regenerateKeyPair.execute(userId, password);
+
+    return res.json({ privateKey });
+  } catch (error: any) {
+    return res.status(401).json({ error: error.message });
+  }
+});
 
 export default router;
