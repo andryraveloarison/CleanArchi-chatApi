@@ -114,7 +114,7 @@ router.post("/regenerate-key", async (req, res) => {
 
     return res.json({success:true, privateKey });
   } catch (error: any) {
-    return res.status(401).json({ error: error.message });
+    return res.status(401).json({ error: error.message, success: false });
   }
 });
 
