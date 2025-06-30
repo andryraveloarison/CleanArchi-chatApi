@@ -107,12 +107,12 @@ router.post("/regenerate-key", async (req, res) => {
     const { userId, password } = req.body;
 
     if (!userId || !password) {
-      return res.status(400).json({ message: "userId et password requis" });
+      return res.status(400).json({ message: "userId et password requis" , success: false});
     }
 
     const { privateKey } = await regenerateKeyPair.execute(userId, password);
 
-    return res.json({ privateKey });
+    return res.json({success:true, privateKey });
   } catch (error: any) {
     return res.status(401).json({ error: error.message });
   }
