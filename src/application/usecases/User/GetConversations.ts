@@ -63,6 +63,7 @@ export class GetConversations {
               email: user.email,
               username: user.username,
               online: user.online,
+              photo: user.photo
             },
             lastMessage,
             unreadCount,

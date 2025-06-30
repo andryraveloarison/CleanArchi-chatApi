@@ -2,6 +2,7 @@ export interface Message {
   id?: string;
   senderId: string;
   senderName?: string;
+  senderPhoto?: string;
   receiverId?: string;
   groupId?: string;
   isGroup?: boolean;
