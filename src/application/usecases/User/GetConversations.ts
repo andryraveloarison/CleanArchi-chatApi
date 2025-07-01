@@ -49,7 +49,7 @@ export class GetConversations {
   
       if (lastMessage.groupId) {
         const group = await this.groupRepository.findById(lastMessage.groupId);
-        if (group) {
+        if (group && group.members.some(member => member.id === currentUserId)) {
           results.push({ type: "group", target: group, lastMessage, unreadCount });
         }
       } else {
