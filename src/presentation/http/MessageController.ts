@@ -28,6 +28,7 @@ router.post("/send", async (req, res) => {
     }else{
       io.emit("group_message", {message})
       console.log("send socket message")
+      console.log(message)
     }
 
     res.status(201).json(message);
