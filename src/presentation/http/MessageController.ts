@@ -7,6 +7,8 @@ import { getIO } from "../../infrastructure/socket/ChatGateway";
 import { GroupRepositoryImpl } from "../../infrastructure/persistence/GroupRepositoryImpl";
 import { GetMessagesByGroupId } from "../../application/usecases/Message/group/GetMessagesByGroupId";
 import { MarkMessagesAsRead } from "../../application/usecases/Message/MarkMessagesAsRead";
+import { GetOneUser } from "../../application/usecases/User/GetOneUser";
+
 const router = express.Router();
 
 const userRepo = new UserRepositoryImpl();
@@ -16,6 +18,7 @@ const createMessage = new CreateMessage(messageRepo, userRepo, groupRepo);
 const getMessagesBetweenUsers = new GetMessagesBetweenUsers(messageRepo);
 const getMessagesByGroupId = new GetMessagesByGroupId(messageRepo);
 const markMessagesAsRead = new MarkMessagesAsRead(messageRepo)
+const getOneUser = new GetOneUser(userRepo);
 
 // POST /messages
 router.post("/send", async (req, res) => {
@@ -23,10 +26,14 @@ router.post("/send", async (req, res) => {
     const { senderId, receiverId, content, groupId} = req.body;
     const io = getIO();
     const message = await createMessage.execute(senderId, receiverId, content, groupId);
+    
     if(!groupId){
       io.emit("new_message", {senderId,receiverId,message}); // ou socket.to(receiverId).emit(...) si tu veux envoyer à un seul utilisateur
     }else{
-      io.emit("group_message", {message})
+      const users = await getOneUser.execute(senderId);
+      const senderName = users?.username
+      const senderPhoto = users?.photo
+      io.emit("group_message", {senderName, senderPhoto, message})
       console.log("send socket message")
       console.log(message)
     }
@@ -75,8 +82,6 @@ router.get("/:userId1/:userId2", async (req, res) => {
       res.status(500).json({ error: err.message });
     }
   });
-
-
 
 
 export default router;
