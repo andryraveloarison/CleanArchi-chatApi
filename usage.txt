@@ -83,3 +83,12 @@ SOCKET
 1 - USER CONNECTED : io.emit("new_user_connected", {user});
 2 - USER DISCONNECT : io.emit("user_disconnect", {userId});
 3 - NEW USER :   io.emit("new_user", {user});
+
+
+
+
+POST http://localhost:3000/api/group/create/:groupId/add-member
+
+POST http://localhost:3000/api/group/create/:groupId/remove-member
+
+GET http://localhost:3000/api/group/:groupId
