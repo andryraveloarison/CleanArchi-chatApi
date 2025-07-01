@@ -2,9 +2,7 @@ import { Message } from "../entities/Message";
 
 
 export function toDomainMessage(doc: any): Message {
-  console.log("********************")
-  console.log(doc._id.toString())
-  console.log("********************")
+
   return {
     id: doc._id.toString(),
     senderId: doc.senderId._id?.toString?.() ?? doc.senderId.toString(),
