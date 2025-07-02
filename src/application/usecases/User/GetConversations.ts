@@ -34,13 +34,11 @@ export class GetConversations {
       const photo = msg.senderPhoto || ""
       const userId = currentUserId
       if (msg.groupId) {
-        console.log("+6+9+9+9+9+9+")
-        console.log(msg)
-        console.log("+6+9+9+9+9+9+")
-
-        //console.log(msg.groupId + " - "+ photo)
-
-        if (!msg.readBy?.includes({userId, photo})) {
+        const isAlreadyRead = msg.readBy?.some(
+          entry => entry.userId.toString() === userId
+        );
+        
+        if (!isAlreadyRead) {
           unreadCountMap.set(key || "", (unreadCountMap.get(key || "") || 0) + 1);
         }
       } else if (msg.receiverId === currentUserId && !msg.read) {

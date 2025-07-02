@@ -13,6 +13,7 @@ export class MarkMessagesAsRead {
     } else {
       // Tous les messages privés entre userId et targetId
       messages = await this.messageRepository.findMessagesBetweenUsers(userId, targetId);
+      messages = messages.map(toDomainMessage)
     }
 
     //messages = messages.map(toDomainMessage)
@@ -34,10 +35,10 @@ export class MarkMessagesAsRead {
       }
 
       } else {
-        // message privé → userId doit être le destinataire
 
-        if (message.receiverId === targetId && !message.read && message.id) {
+        if (message.receiverId === userId && !message.read && message.id) {
             await this.messageRepository.update(message.id, { read: true });
+
         }
       }
     }
