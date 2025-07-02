@@ -23,9 +23,9 @@ export class MarkMessagesAsRead {
         if (!message.readBy) message.readBy = [];
         try {
 
-        
-        if (!message.readBy.includes(userId) && message.id) {
-          message.readBy.push(userId);
+        const senderPhoto = message.senderPhoto || ""
+        if (!message.readBy.includes({userId, photo: senderPhoto}) && message.id) {
+          message.readBy.push({userId, photo: senderPhoto});
             await this.messageRepository.update(message.id, { readBy: message.readBy });          
         }
 

@@ -71,6 +71,9 @@ export class CreateMessage {
   
         const encryptedForReceiver = publicEncrypt(user.key, Buffer.from(plainText));
         const encryptedForSender = publicEncrypt(sender.key, Buffer.from(plainText));
+
+        const userId = senderId
+        const photo = user.photo || ""
   
         const message: Message = {
           senderId,
@@ -83,7 +86,7 @@ export class CreateMessage {
           },
           timestamp: new Date(),
           read: false,
-          readBy: [senderId], // ✅ Si le destinataire est l’expéditeur, il a déjà lu
+          readBy: [{userId, photo}], // ✅ Si le destinataire est l’expéditeur, il a déjà lu
 
         };
   

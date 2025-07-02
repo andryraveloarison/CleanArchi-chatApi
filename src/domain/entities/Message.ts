@@ -12,5 +12,11 @@ export interface Message {
   };
   timestamp: Date;
   read?: boolean;
-  readBy?: string[];
+  readBy?: ReadBy[];
+}
+
+
+interface ReadBy {
+  userId: string,
+  photo: string
 }
