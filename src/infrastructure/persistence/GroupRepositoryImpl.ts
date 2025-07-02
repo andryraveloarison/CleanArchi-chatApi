@@ -5,10 +5,15 @@ import GroupModel from "./models/GroupSchema";
 export class GroupRepositoryImpl implements IGroupRepository {
   async findById(id: string): Promise<Group | null> {
     const group = await GroupModel.findById(id)
-      .populate("members", "username") // populate uniquement le nom
-      .lean();
+    .populate({
+      path: "members",
+      select: "username photo", // <- s'assurer que photo ET username sont récupérés
+    })
+    .lean();
+  
 
     if (!group) return null;
+
 
     return {
       id: group._id.toString(),
@@ -16,6 +21,7 @@ export class GroupRepositoryImpl implements IGroupRepository {
       members: group.members.map((m: any) => ({
         id: m._id.toString(),
         username: m.username,
+        photo: m.photo
       })),
     };
   }
