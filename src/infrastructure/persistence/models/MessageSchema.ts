@@ -13,6 +13,7 @@ const MessageSchema = new mongoose.Schema({
   read: { type: Boolean, default: false },
   readBy: [
     {
+      _id: false, // ✅ empêche Mongoose de générer un _id pour chaque sous-doc
       userId: { type: mongoose.Schema.Types.ObjectId, ref: "User", required: true },
       photo: { type: String }
     }

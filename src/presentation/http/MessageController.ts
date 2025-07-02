@@ -34,8 +34,7 @@ router.post("/send", async (req, res) => {
       const senderName = users?.username
       const senderPhoto = users?.photo
       io.emit("group_message", {senderName, senderPhoto, message})
-      console.log("send socket message")
-      console.log(message)
+
     }
 
     res.status(201).json(message);
