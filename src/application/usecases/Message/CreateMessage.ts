@@ -75,6 +75,7 @@ export class CreateMessage {
           senderId,
           groupId,
           isGroup: true,
+          senderPhoto: photo,
           receiverId: memberId.id,
           content: {
             forReceiver: encryptedForReceiver.toString("base64"),

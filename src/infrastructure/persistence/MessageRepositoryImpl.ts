@@ -14,10 +14,12 @@ export class MessageRepositoryImpl implements IMessageRepository {
       ]
     })
       .sort({ timestamp: -1 })
-      .populate("senderId", "username") // ⬅️ récupérer le nom de l'expéditeur
+      .populate({
+        path: "senderId",
+        select: "username photo", // <- s'assurer que photo ET username sont récupérés
+      })
       .lean();
 
-    console.log(docs)
   
     return docs.map(toDomainMessage);
   }
@@ -95,9 +97,7 @@ export class MessageRepositoryImpl implements IMessageRepository {
   
     return docs.map(toDomainMessage);
 
-  }
-  
-  
+  }  
 
     // ✅ findById
     async findById(id: string): Promise<Message | null> {
