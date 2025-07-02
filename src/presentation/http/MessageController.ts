@@ -34,7 +34,6 @@ router.post("/send", async (req, res) => {
       const senderName = users?.username
       const senderPhoto = users?.photo
       io.emit("group_message", {senderName, senderPhoto, message})
-
     }
 
     res.status(201).json(message);
@@ -60,15 +59,12 @@ router.put("/read/:userId/:targetId", async (req, res) => {
   try {
     const { userId, targetId } = req.params;
     const isGroup = req.query.isGroup === 'true'; // ?isGroup=true
-
     await markMessagesAsRead.execute(userId, targetId, isGroup);
     res.status(200).json({ success: true });
   } catch (err: any) {
     res.status(500).json({ error: err.message });
   }
 });
-
-
 
 // GET /messages/:userId1/:userId2
 router.get("/:userId1/:userId2", async (req, res) => {

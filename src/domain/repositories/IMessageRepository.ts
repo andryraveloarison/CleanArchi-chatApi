@@ -26,4 +26,7 @@ export interface IMessageRepository {
   findMessagesInvolvingUser(userId: string): Promise<Message[]>;
   findById(id: string): Promise<Message | null>;
   update(id: string, data: Partial<Message>): Promise<Message | null>;
+  findByIdGroup(groupId: string): Promise<Message[]>;
+  findLastMessageGroupForUser(userId: string): Promise<Message>;
+
 }

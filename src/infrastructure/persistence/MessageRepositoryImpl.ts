@@ -36,7 +36,6 @@ export class MessageRepositoryImpl implements IMessageRepository {
   }
 
   async findMessagesBetweenUsers(userId1: string, userId2: string): Promise<any[]> {
-
       
   // Ton message chiffré en base64
 
@@ -110,5 +109,38 @@ export class MessageRepositoryImpl implements IMessageRepository {
     }
 
 
+    async findByIdGroup(groupId: string): Promise<Message[]> {
+      const docs = await MessageModel.find({
+        $or: [
+          { groupId: groupId }       
+      ]
+      })
+        .sort({ timestamp: -1 })
+        .populate({
+          path: "senderId",
+          select: "username photo", // <- s'assurer que photo ET username sont récupérés
+        })
+        .lean();
   
+    
+      return docs.map(toDomainMessage);
+    }
+
+    async findLastMessageGroupForUser(userId: string): Promise<Message> {
+      const docs = await MessageModel.find({
+        $or: [
+          { senderId: userId },
+          { receiverId:  userId}    
+      ]
+      })
+        .sort({ timestamp: -1 })
+        .populate({
+          path: "senderId",
+          select: "username photo", // <- s'assurer que photo ET username sont récupérés
+        })
+        .lean();
+  
+    
+      return docs.map(toDomainMessage)[0];
+    }
 }
