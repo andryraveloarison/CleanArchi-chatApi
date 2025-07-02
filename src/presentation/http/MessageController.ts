@@ -59,9 +59,9 @@ router.get("/group/:userId/:groupId", async (req, res) => {
 // PUT /messages/read/:userId/:targetId?isGroup=true
 router.put("/read/:userId/:targetId", async (req, res) => {
   try {
-    console.log("Test")
     const { userId, targetId } = req.params;
     const isGroup = req.query.isGroup === 'true'; // ?isGroup=true
+    console.log(isGroup)
 
     await markMessagesAsRead.execute(userId, targetId, isGroup);
     res.status(200).json({ success: true });

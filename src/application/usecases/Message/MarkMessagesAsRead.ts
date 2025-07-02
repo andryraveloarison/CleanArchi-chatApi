@@ -15,17 +15,24 @@ export class MarkMessagesAsRead {
       messages = await this.messageRepository.findMessagesBetweenUsers(userId, targetId);
     }
 
-    messages = messages.map(toDomainMessage)
+    //messages = messages.map(toDomainMessage)
 
 
     for (const message of messages) {
       if (isGroup) {
         if (!message.readBy) message.readBy = [];
+        try {
+
+        
         if (!message.readBy.includes(userId) && message.id) {
           message.readBy.push(userId);
-            await this.messageRepository.update(message.id, { readBy: message.readBy });
-          
+            await this.messageRepository.update(message.id, { readBy: message.readBy });          
         }
+
+      }catch(err: any){
+        console.log(err)
+      }
+
       } else {
         // message privé → userId doit être le destinataire
 
