@@ -1,10 +1,17 @@
 import { IMessageRepository, toDomainMessage } from "../../../domain/repositories/IMessageRepository";
+import { IUserRepository } from "../../../domain/repositories/IUserRepository";
 
 export class MarkMessagesAsRead {
-  constructor(private messageRepository: IMessageRepository) {}
+  constructor(
+    private messageRepository: IMessageRepository,
+    private userRepository: IUserRepository
+  ) {}
 
   async execute(userId: string, targetId: string, isGroup: boolean): Promise<void> {
     let messages = [];
+
+    const senderPhoto = (await this.userRepository.findById(userId))?.photo || "";
+
 
 
     if (isGroup) {
@@ -22,7 +29,6 @@ export class MarkMessagesAsRead {
       if (isGroup) {
         if (!message.readBy) message.readBy = [];
       
-        const senderPhoto = message.senderPhoto || "";
         const hasRead = message.readBy.some(entry => entry.userId.toString() === userId);
         
 
@@ -46,7 +52,7 @@ export class MarkMessagesAsRead {
           for (const msg of unreadMessages) {
             if (!msg.readBy) msg.readBy = [];
       
-            msg.readBy.push({ userId, photo: senderPhoto });
+            msg.readBy.push({ userId, photo: senderPhoto|| "" });
       
             await this.messageRepository.update(msg.id!, { readBy: msg.readBy });
           }
