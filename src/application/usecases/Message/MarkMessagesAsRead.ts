@@ -22,19 +22,29 @@ export class MarkMessagesAsRead {
     for (const message of messages) {
       if (isGroup) {
         if (!message.readBy) message.readBy = [];
-        try {
-
-        const senderPhoto = message.senderPhoto || ""
-        if (!message.readBy.includes({userId, photo: senderPhoto}) && message.id) {
-          message.readBy.push({userId, photo: senderPhoto});
-            await this.messageRepository.update(message.id, { readBy: message.readBy });          
+      
+        const senderPhoto = message.senderPhoto || "";
+        const hasRead = message.readBy.some(entry => entry.userId.toString() === userId);
+      
+        if (!hasRead && message.id) {
+          const messageTimestamp = new Date(message.timestamp);
+      
+          // ✅ Filtrer tous les messages postérieurs à celui-ci (y compris lui-même)
+          const unreadMessages = messages.filter(m =>
+            new Date(m.timestamp) >= messageTimestamp &&
+            !m.readBy?.some(entry => entry.userId.toString() === userId)
+          );
+      
+          for (const msg of unreadMessages) {
+            if (!msg.readBy) msg.readBy = [];
+      
+            msg.readBy.push({ userId, photo: senderPhoto });
+      
+            await this.messageRepository.update(msg.id!, { readBy: msg.readBy });
+          }
         }
-
-      }catch(err: any){
-        console.log(err)
       }
-
-      } else {
+       else {
 
         if (message.receiverId === userId && !message.read && message.id) {
             await this.messageRepository.update(message.id, { read: true });
