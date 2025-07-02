@@ -64,12 +64,15 @@ export class CreateMessage {
       for (const memberId of group.members) {
         const user = await this.userRepository.findById(memberId.id);
         if (!user?.key) continue;
+
+
   
         const encryptedForReceiver = publicEncrypt(user.key, Buffer.from(plainText));
         const encryptedForSender = publicEncrypt(sender.key, Buffer.from(plainText));
 
         const userId = senderId
-        const photo = user.photo || ""
+        const photo = (await this.userRepository.findById(userId))?.photo || "";
+
   
         const message: Message = {
           senderId,
