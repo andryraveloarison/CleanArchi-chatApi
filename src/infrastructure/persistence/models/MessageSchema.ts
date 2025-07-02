@@ -11,8 +11,12 @@ const MessageSchema = new mongoose.Schema({
   },
   timestamp: { type: Date, default: Date.now },
   read: { type: Boolean, default: false },
-  readBy: { type: [String], default: [] }
-});
+  readBy: [
+    {
+      userId: { type: mongoose.Schema.Types.ObjectId, ref: "User", required: true },
+      photo: { type: String }
+    }
+  ]});
 
 // ✅ Transformation pour renommer _id en id
 MessageSchema.set("toJSON", {
@@ -23,5 +27,7 @@ MessageSchema.set("toJSON", {
     delete ret._id;
   }
 });
+
+
 
 export default mongoose.model("Message", MessageSchema);

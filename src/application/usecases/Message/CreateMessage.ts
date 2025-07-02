@@ -17,8 +17,7 @@ export class CreateMessage {
     groupId: string
   ): Promise<Message | Message[]> {
 
-    console.log(groupId)
-    console.log(plainText)
+
 
 
     if (!receiverId && !groupId) {
@@ -31,10 +30,8 @@ export class CreateMessage {
   
     // ✅ Message privé
     if (receiverId) {
-      console.log("receiver Id"+receiverId)
 
       const receiver = await this.userRepository.findById(receiverId);
-      console.log("message2")
 
       if (!receiver || !receiver.key) throw new Error("Clé publique du destinataire introuvable");
   
@@ -53,7 +50,6 @@ export class CreateMessage {
         read: false, // ✅ non lu
       };
   
-      console.log(message)
       return await this.messageRepository.save(message);
     }
   
@@ -91,6 +87,7 @@ export class CreateMessage {
         };
   
         messages.push(await this.messageRepository.save(message));
+
       }
   
       return messages;
