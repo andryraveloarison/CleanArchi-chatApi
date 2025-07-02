@@ -7,7 +7,7 @@ export function toDomainMessage(doc: any): Message {
     id: doc._id.toString(),
     senderId: doc.senderId._id?.toString?.() ?? doc.senderId.toString(),
     senderName: doc.senderId.username ?? null, // ← inclus ici
-    senderPhoto: doc.senderPhoto ?? null,
+    senderPhoto: doc.senderId.photo ?? null,
     receiverId: doc.receiverId,
     groupId: doc.groupId,
     isGroup: doc.isGroup,

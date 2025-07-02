@@ -86,7 +86,10 @@ export class MessageRepositoryImpl implements IMessageRepository {
       groupId,
       $or: [{ receiverId: userId }],
     })
-    .populate("senderId", "username") // ⬅️ récupérer le nom de l'expéditeur
+    .populate({
+      path: "senderId",
+      select: "username photo", // <- s'assurer que photo ET username sont récupérés
+    })
     .sort({ timestamp: 1 })
     .lean();
   
