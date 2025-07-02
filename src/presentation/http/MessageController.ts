@@ -17,7 +17,7 @@ const groupRepo = new GroupRepositoryImpl()
 const createMessage = new CreateMessage(messageRepo, userRepo, groupRepo);
 const getMessagesBetweenUsers = new GetMessagesBetweenUsers(messageRepo);
 const getMessagesByGroupId = new GetMessagesByGroupId(messageRepo);
-const markMessagesAsRead = new MarkMessagesAsRead(messageRepo)
+const markMessagesAsRead = new MarkMessagesAsRead(messageRepo, userRepo)
 const getOneUser = new GetOneUser(userRepo);
 
 // POST /messages
