@@ -26,8 +26,6 @@ export class CreateMessage {
   ): Promise<Message | Message[]> {
 
 
-
-
     if (!receiverId && !groupId) {
       throw new Error("receiverId ou groupId est requis");
     }
@@ -43,9 +41,23 @@ export class CreateMessage {
 
       if (!receiver || !receiver.key) throw new Error("Clé publique du destinataire introuvable");
   
-
-      const encryptedForReceiver = publicEncrypt(receiver.key, Buffer.from(plainText));
       const encryptedForSender = publicEncrypt(sender.key, Buffer.from(plainText));
+      const encryptedForReceiver = publicEncrypt(receiver.key, Buffer.from(plainText));
+
+      const separator = ":::";
+
+      const image = media.image
+        ? `${publicEncrypt(sender.key, Buffer.from(media.image)).toString("base64")}${separator}${publicEncrypt(receiver.key, Buffer.from(media.image)).toString("base64")}`
+        : null;
+
+      const audio = media.audio
+        ? `${publicEncrypt(sender.key, Buffer.from(media.audio)).toString("base64")}${separator}${publicEncrypt(receiver.key, Buffer.from(media.audio)).toString("base64")}`
+        : null;
+
+      const file = media.file
+        ? `${publicEncrypt(sender.key, Buffer.from(media.file)).toString("base64")}${separator}${publicEncrypt(receiver.key, Buffer.from(media.file)).toString("base64")}`
+        : null;
+    
   
       const message: Message = {
         senderId,
@@ -56,7 +68,9 @@ export class CreateMessage {
         },
         timestamp: new Date(),
         read: false, // ✅ non lu
-        ...media
+        image,
+        audio,
+        file
       };
   
       return await this.messageRepository.save(message);
@@ -78,6 +92,20 @@ export class CreateMessage {
         const encryptedForReceiver = publicEncrypt(user.key, Buffer.from(plainText));
         const encryptedForSender = publicEncrypt(sender.key, Buffer.from(plainText));
 
+        const separator = ":::";
+
+        const image = media.image
+          ? `${publicEncrypt(sender.key, Buffer.from(media.image)).toString("base64")}${separator}${publicEncrypt(user.key, Buffer.from(media.image)).toString("base64")}`
+          : null;
+  
+        const audio = media.audio
+          ? `${publicEncrypt(sender.key, Buffer.from(media.audio)).toString("base64")}${separator}${publicEncrypt(user.key, Buffer.from(media.audio)).toString("base64")}`
+          : null;
+  
+        const file = media.file
+          ? `${publicEncrypt(sender.key, Buffer.from(media.file)).toString("base64")}${separator}${publicEncrypt(user.key, Buffer.from(media.file)).toString("base64")}`
+          : null;
+
         const userId = senderId
         const photo = (await this.userRepository.findById(userId))?.photo || "";
 
@@ -95,7 +123,9 @@ export class CreateMessage {
           timestamp: new Date(),
           read: false,
           readBy: [{userId, photo}], // ✅ Si le destinataire est l’expéditeur, il a déjà lu
-          ...media
+          image,
+          audio,
+          file
         };
   
         messages.push(await this.messageRepository.save(message));
