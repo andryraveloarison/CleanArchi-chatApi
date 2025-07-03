@@ -13,6 +13,9 @@ export interface Message {
   timestamp: Date;
   read?: boolean;
   readBy?: ReadBy[];
+  image: string | null;
+  audio: string | null;
+  file: string | null;
 }
 
 

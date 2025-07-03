@@ -4,6 +4,12 @@ import { Message } from "../../../domain/entities/Message";
 import { publicEncrypt } from "crypto";
 import { IGroupRepository } from "../../../domain/repositories/IGroupRepository";
 
+interface mediaInterface {
+  image: string | null;
+  audio: string | null;
+  file: string | null
+
+}
 export class CreateMessage {
   constructor(
     private messageRepository: IMessageRepository,
@@ -14,7 +20,9 @@ export class CreateMessage {
     senderId: string,
     receiverId: string,
     plainText: string,
-    groupId: string
+    groupId: string,
+    media: mediaInterface
+
   ): Promise<Message | Message[]> {
 
 
@@ -48,6 +56,7 @@ export class CreateMessage {
         },
         timestamp: new Date(),
         read: false, // ✅ non lu
+        ...media
       };
   
       return await this.messageRepository.save(message);
@@ -64,7 +73,6 @@ export class CreateMessage {
       for (const memberId of group.members) {
         const user = await this.userRepository.findById(memberId.id);
         if (!user?.key) continue;
-
 
   
         const encryptedForReceiver = publicEncrypt(user.key, Buffer.from(plainText));
@@ -87,7 +95,7 @@ export class CreateMessage {
           timestamp: new Date(),
           read: false,
           readBy: [{userId, photo}], // ✅ Si le destinataire est l’expéditeur, il a déjà lu
-
+          ...media
         };
   
         messages.push(await this.messageRepository.save(message));

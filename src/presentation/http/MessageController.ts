@@ -8,6 +8,7 @@ import { GroupRepositoryImpl } from "../../infrastructure/persistence/GroupRepos
 import { GetMessagesByGroupId } from "../../application/usecases/Message/group/GetMessagesByGroupId";
 import { MarkMessagesAsRead } from "../../application/usecases/Message/MarkMessagesAsRead";
 import { GetOneUser } from "../../application/usecases/User/GetOneUser";
+import { uploadMessage } from "../../infrastructure/middleware/uploadMessage";
 
 const router = express.Router();
 
@@ -21,26 +22,54 @@ const markMessagesAsRead = new MarkMessagesAsRead(messageRepo, userRepo)
 const getOneUser = new GetOneUser(userRepo);
 
 // POST /messages
-router.post("/send", async (req, res) => {
-  try {
-    const { senderId, receiverId, content, groupId} = req.body;
-    const io = getIO();
-    const message = await createMessage.execute(senderId, receiverId, content, groupId);
-    
-    if(!groupId){
-      io.emit("new_message", {senderId,receiverId,message}); // ou socket.to(receiverId).emit(...) si tu veux envoyer à un seul utilisateur
-    }else{
-      const users = await getOneUser.execute(senderId);
-      const senderName = users?.username
-      const senderPhoto = users?.photo
-      io.emit("group_message", {senderName, senderPhoto, message})
-    }
 
-    res.status(201).json(message);
-  } catch (err: any) {
-    res.status(400).json({ error: err.message });
+router.post(
+  "/send",
+  uploadMessage.fields([
+    { name: "image", maxCount: 1 },
+    { name: "audio", maxCount: 1 },
+    { name: "file", maxCount: 1 }
+  ]),
+  async (req, res) => {
+    try {
+      const { senderId, receiverId, content, groupId } = req.body;
+      const io = getIO();
+
+      const files = req.files as {
+        image?: Express.Multer.File[];
+        audio?: Express.Multer.File[];
+        file?: Express.Multer.File[];
+      };
+
+      const image = files.image?.[0]?.filename || null;
+      const audio = files.audio?.[0]?.filename || null;
+      const file = files.file?.[0]?.filename || null;
+
+      const message = await createMessage.execute(
+        senderId,
+        receiverId,
+        content,
+        groupId,
+        { image, audio, file }
+      );
+
+      if (!groupId) {
+        io.emit("new_message", { senderId, receiverId, message });
+      } else {
+        const user = await getOneUser.execute(senderId);
+        io.emit("group_message", {
+          senderName: user?.username,
+          senderPhoto: user?.photo,
+          message
+        });
+      }
+
+      res.status(201).json(message);
+    } catch (err: any) {
+      res.status(400).json({ error: err.message });
+    }
   }
-});
+);
 
 
 router.get("/group/:userId/:groupId", async (req, res) => {

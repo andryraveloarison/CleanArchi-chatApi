@@ -9,6 +9,9 @@ const MessageSchema = new mongoose.Schema({
     forReceiver: { type: String, required: true },
     forSender: { type: String, required: true }
   },
+  image: { type: String, default: null },
+  audio: { type: String, default: null },
+  file: { type: String, default: null },
   timestamp: { type: Date, default: Date.now },
   read: { type: Boolean, default: false },
   readBy: [

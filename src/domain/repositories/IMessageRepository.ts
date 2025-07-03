@@ -15,6 +15,9 @@ export function toDomainMessage(doc: any): Message {
     timestamp: doc.timestamp,
     read: doc.read,
     readBy: doc.readBy,
+    image: doc.image,
+    audio: doc.audio,
+    file: doc.file
   };
 }
 
